@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_PROCESSES 5
+
+// Structure representing a process
+struct Process {
+    int id;
+    int priority;
+};
+
+// Function to execute a process
+void executeProcess(struct Process *process) {
+    printf("Executing process %d with priority %d\n", process->id, process->priority);
+}
+
+// Function to find the process with the highest priority
+struct Process* findHighestPriority(struct Process *processes, int numProcesses) {
+    if (numProcesses <= 0) {
+        return NULL;
+    }
+
+    struct Process *highestPriorityProcess = &processes[0];
+
+    for (int i = 1; i < numProcesses; ++i) {
+        if (processes[i].priority > highestPriorityProcess->priority) {
+            highestPriorityProcess = &processes[i];
+        }
+    }
+
+    return highestPriorityProcess;
+}
+
+int main() {
+    struct Process processes[MAX_PROCESSES] = {
+        {1, 5},
+        {2, 3},
+        {3, 8},
+        {4, 2},
+        {5, 6}
+    };
+
+    int numProcesses = MAX_PROCESSES;
+
+    // Select and execute processes based on priority
+    while (numProcesses > 0) {
+        struct Process *nextProcess = findHighestPriority(processes, numProcesses);
+
+        if (nextProcess != NULL) {
+            executeProcess(nextProcess);
+
+            // Remove the executed process from the array
+            *nextProcess = processes[numProcesses - 1];
+            numProcesses--;
+        }
+    }
+
+    printf("All processes executed.\n");
+
+    return 0;
+}
